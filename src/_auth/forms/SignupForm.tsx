@@ -15,6 +15,7 @@ import {
     FormMessage,
 } from "@/components/ui/form"
 import Loader from "@/components/shared/Loader"
+import { createUserAccount } from "@/lib/appwrite/api";
 
 const SignupForm = () => {
 
@@ -32,9 +33,12 @@ const SignupForm = () => {
     })
 
     // 2. 
-    function onSubmit(values: z.infer<typeof SignupValidation>) {
+    async function onSubmit(values: z.infer<typeof SignupValidation>) {
         // create user
-        console.log(values)
+        const newUser = await createUserAccount(values);
+
+        console.log(newUser);
+        
     }
 
     return (
