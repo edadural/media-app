@@ -16,10 +16,12 @@ import {
 } from "@/components/ui/form"
 import Loader from "@/components/shared/Loader"
 import { createUserAccount } from "@/lib/appwrite/api";
+import { useToast } from "@/components/ui/use-toast";
 
 const SignupForm = () => {
 
     const isLoading = false;
+    const { toast } = useToast()
 
     // 1. form tanımlama
     const form = useForm<z.infer<typeof SignupValidation>>({
@@ -37,8 +39,11 @@ const SignupForm = () => {
         // create user
         const newUser = await createUserAccount(values);
 
-        console.log(newUser);
-        
+        if (!newUser) {
+            return toast({ title: "Kayıl ol başarısız. Tekrar deneyiniz." });
+        }
+
+        // const session = await signInAccount()
     }
 
     return (

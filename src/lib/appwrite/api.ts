@@ -1,6 +1,6 @@
 import { ID } from "appwrite";
 
-import { account } from "./config";
+import { account, appwriteConfig, avatars, databases } from "./config";
 import { INewUser } from "@/types";
 
 // ============================================================
@@ -19,10 +19,45 @@ export async function createUserAccount(user: INewUser) {
             user.name
         );
 
-        return newAccount;
+        if (!newAccount) throw Error;       // yeni hesap olup olmadığını kontrol etme
+
+        const avatarUrl = avatars.getInitials(user.name);   //isimdeki bas harfler avatar 
+
+        const newUser = await saveUserToDB({       // verilen kullanıcı bilgilerini alır,  kullanıcıyı db de kaydeder
+            accountId: newAccount.$id,
+            name: newAccount.name,
+            email: newAccount.email,
+            username: user.username,
+            imageUrl: avatarUrl,
+        });
+
+        return newUser;
+
 
     } catch (error) {
         console.log(error);
         return error;
+    }
+}
+
+// ============================== SAVE USER TO DB
+export async function saveUserToDB(user: {
+    accountId: string;
+    email: string;
+    name: string;
+    imageUrl: URL;
+    username?: string;
+}) {
+    try {
+        const newUser = await databases.createDocument(
+            appwriteConfig.databaseId,
+            appwriteConfig.userCollectionId,
+            ID.unique(),
+            user
+        );
+
+        return newUser;
+    } catch (error) {
+        console.log(error);
     }
 }
