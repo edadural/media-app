@@ -25,9 +25,9 @@ const SignupForm = () => {
     const navigate = useNavigate();
     const { checkAuthUser, isLoading: isUserLoading } = useUserContext();
 
-    const { mutateAsync: createUserAccount, isLoading: isCreatingUser } = useCreateUserAccount();  // asenkron işlemleri yönetmek ve veri alışverişini kolaylaştırmak
+    const { mutateAsync: createUserAccount, isPending: isCreatingUser } = useCreateUserAccount();  // asenkron işlemleri yönetmek ve veri alışverişini kolaylaştırmak
 
-    const { mutateAsync: signInAccount, isLoading: isSigningIn } = useSignInAccount();
+    const { mutateAsync: signInAccount, isPending: isSigningIn } = useSignInAccount();
 
     // 1. form tanımlama
     const form = useForm<z.infer<typeof SignupValidation>>({
