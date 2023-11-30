@@ -96,3 +96,15 @@ export async function getCurrentUser() {
         return null;
     }
 }
+
+// SIGN OUT
+// mevcut kullanıcının oturumunu sonlandırmak ve çıkış yapmak 
+export async function signOutAccount() {
+    try {
+        const session = await account.deleteSession("current");
+
+        return session;
+    } catch (error) {
+        console.log(error);
+    }
+}
