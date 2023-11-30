@@ -11,3 +11,8 @@ export const SignupValidation = z.object({
   email: z.string().email(),
   password: z.string().min(8, { message: "Parola en az 8 karakter olmalıdır." }),
 });
+
+export const SigninValidation = z.object({
+  email: z.string().email(),
+  password: z.string().min(8, { message: "Parola en az 8 karakter olmalıdır." }),
+});
