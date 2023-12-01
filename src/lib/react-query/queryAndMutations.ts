@@ -1,8 +1,8 @@
 import { INewPost, INewUser } from "@/types";
 import {
-    useMutation, useQueryClient,
+    useMutation, useQuery, useQueryClient,
 } from "@tanstack/react-query";
-import { createPost, createUserAccount, signInAccount, signOutAccount } from "../appwrite/api";
+import { createPost, createUserAccount, getRecentPosts, signInAccount, signOutAccount } from "../appwrite/api";
 import { QUERY_KEYS } from "./queryKeys";
 
 // ============================================================
@@ -45,5 +45,13 @@ export const useCreatePost = () => {
                 queryKey: [QUERY_KEYS.GET_RECENT_POSTS],
             });
         }, // yeni bir gönderi oluşturduktan sonra son gönderiler için sorguyu geçersiz kılmalıyız
+    });
+};
+
+// son gönderiyi al en üste aktar
+export const useGetRecentPosts = () => {
+    return useQuery({
+        queryKey: [QUERY_KEYS.GET_RECENT_POSTS],
+        queryFn: getRecentPosts,
     });
 };
