@@ -1,8 +1,9 @@
-import { INewUser } from "@/types";
+import { INewPost, INewUser } from "@/types";
 import {
-    useMutation,
+    useMutation, useQueryClient,
 } from "@tanstack/react-query";
-import { createUserAccount, signInAccount, signOutAccount } from "../appwrite/api";
+import { createPost, createUserAccount, signInAccount, signOutAccount } from "../appwrite/api";
+import { QUERY_KEYS } from "./queryKeys";
 
 // ============================================================
 // AUTH QUERIES
@@ -26,6 +27,23 @@ export const useSignInAccount = () => {
 
 export const useSignOutAccount = () => {
     return useMutation({
-      mutationFn: signOutAccount
+        mutationFn: signOutAccount
     });
-  };
+};
+
+
+// ============================================================
+// POST QUERIES
+
+export const useCreatePost = () => {
+    // gönderi oluşturduktan sonra, mevcut tüm gönderileri de sorgulamak 
+    const queryClient = useQueryClient();
+    return useMutation({
+        mutationFn: (post: INewPost) => createPost(post),
+        onSuccess: () => {
+            queryClient.invalidateQueries({
+                queryKey: [QUERY_KEYS.GET_RECENT_POSTS],
+            });
+        }, // yeni bir gönderi oluşturduktan sonra son gönderiler için sorguyu geçersiz kılmalıyız
+    });
+};
