@@ -1,7 +1,7 @@
 import { useDeleteSavedPost, useGetCurrentUser, useLikePost, useSavePost } from "@/lib/react-query/queryAndMutations";
 import { checkIsLiked } from "@/lib/utils";
 import { Models } from "appwrite"
-import { Loader } from "lucide-react";
+import Loader from "@/components/shared/Loader"
 import { useEffect, useState } from "react";
 
 // postun istatistiklerini veya görselleştirmelerini oluşturmak icin bilgiler

@@ -12,16 +12,18 @@ import { Models } from "appwrite"
 import { useUserContext } from "@/context/AuthContext"
 import { useNavigate } from "react-router-dom"
 import { useToast } from "../ui/use-toast"
-import { useCreatePost } from "@/lib/react-query/queryAndMutations"
+import { useCreatePost, useUpdatePost } from "@/lib/react-query/queryAndMutations"
+import Loader from "../shared/Loader"
 
 type PostFormProps = {
     post?: Models.Document;
     action: "Create" | "Update";
 };
 
-const PostForm = ({ post }: PostFormProps) => {
+const PostForm = ({ post, action }: PostFormProps) => {
     const { mutateAsync: createPost, isPending: isLoadingCreate } = useCreatePost();
     // mutateAsync - asenkron bir işlemi tetiklemek için kullanılacak bir fonksiyon, isLoading - post oluşturma işleminin yükleniyor olup olmadığını izlemek için kullanılan bir durum değişkeni
+    const { mutateAsync: updatePost, isPending: isLoadingUpdate } = useUpdatePost();
     const { user } = useUserContext();
     const navigate = useNavigate();
     const { toast } = useToast();
@@ -37,6 +39,26 @@ const PostForm = ({ post }: PostFormProps) => {
     })
 
     async function onSubmit(values: z.infer<typeof PostValidation>) {
+        if (post && action === "Update") {
+            const updatedPost = await updatePost({
+                ...values,
+                postId: post.$id,
+                imageId: post.imageId,
+                imageUrl: post.imageUrl,
+            });
+
+            // guncellenmis gonderi yoksa
+            if (!updatedPost) {
+                toast({
+                    title: 'Tekrar deneyin.',
+                });
+            }
+
+            // Oluşturulan gönderi basarılı bir şekilde güncellendigini gormek icin o sayfanın ayrıntılarına git
+            return navigate(`/posts/${post.$id}`);
+        }
+
+
         const newPost = await createPost({
             ...values,
             userId: user.id,
@@ -123,13 +145,14 @@ const PostForm = ({ post }: PostFormProps) => {
                         type="button"
                         className="shad-button_dark_4"
                     >
-                        İptal
+                        Cancel
                     </Button>
                     <Button
                         type="submit"
                         className="shad-button_primary whitespace-nowrap"
-                    >
-                        Oluştur
+                        disabled={isLoadingCreate || isLoadingUpdate}>
+                        {(isLoadingCreate || isLoadingUpdate) && <Loader />}
+                        {action} Post
                     </Button>
                 </div>
 
@@ -138,4 +161,4 @@ const PostForm = ({ post }: PostFormProps) => {
     )
 }
 
-export default PostForm
+export default PostForm;
