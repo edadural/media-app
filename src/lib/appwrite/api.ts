@@ -114,6 +114,7 @@ export async function signOutAccount() {
 // POSTS
 // ============================================================
 
+
 // CREATE POST
 export async function createPost(post: INewPost) {
     try {
@@ -369,4 +370,50 @@ export async function deletePost(postId: string, imageId: string) {
         console.log(error);
     }
 
+}
+
+// SONSUZ GONDERİ
+// bu kod parçası belirli bir imleç sonrasındaki verilerin alınmasını sağlayarak sayfalama işlemini gerçekleştirir.
+// Verileri parça parça getirerek büyük veri setlerini yönetmeyi amaçlar
+export async function getInfinitePosts({ pageParam }: { pageParam: number }) {
+    // kullanıcının hangi sayfayı almak istediğini belirler ve kullanıcı kaydırdıkça veya sayfa değiştirdikçe daha fazla veri getirmek için kullanılanilir
+
+    const queries: any[] = [Query.orderDesc("$updatedAt"), Query.limit(9)];
+    // verileri belirli bir alana göre azalan sırayla sıralamak için kullanılır. en fazla 9 öğe alınabilir.
+
+    if (pageParam) {
+        queries.push(Query.cursorAfter(pageParam.toString()));
+        // belirli bir imleçten sonrasındaki verileri getirmek için kullanılır
+    }
+
+    try {
+        const posts = await databases.listDocuments(
+            appwriteConfig.databaseId,
+            appwriteConfig.postCollectionId,
+            queries
+        );
+
+        if (!posts) throw Error;
+
+        return posts;
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+// kullanıcılar tarafından girilen bir terime göre gönderileri filtrelemek veya aramak için bu fonksiyon kullanılabilir
+export async function searchPosts(searchTerm: string) {
+    try {
+        const posts = await databases.listDocuments(
+            appwriteConfig.databaseId,
+            appwriteConfig.postCollectionId,
+            [Query.search("caption", searchTerm)]  // basliga gore arama
+        );
+
+        if (!posts) throw Error;
+
+        return posts;
+    } catch (error) {
+        console.log(error);
+    }
 }
