@@ -4,15 +4,22 @@ import SearchResults from "@/components/shared/SearchResults";
 import { Input } from "@/components/ui/input";
 import useDebounce from "@/hooks/useDebounce";
 import { useGetPosts, useSearchPosts } from "@/lib/react-query/queryAndMutations";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useInView } from "react-intersection-observer";
 
 const Explore = () => {
+  const { ref, inView } = useInView();
   const { data: posts, fetchNextPage, hasNextPage } = useGetPosts();
 
   const [searchValue, setSearchValue] = useState("");
 
   const debouncedValue = useDebounce(searchValue, 500);    // 500 milisaniye sonra arama islemi yapılır
   const { data: searchedPosts, isFetching: isSearchFetching } = useSearchPosts(debouncedValue);     // degere göre bir arama yapar ve bu sürecin ne zaman devam ettiğini, ne zaman tamamlandığını veya sonuçların ne zaman geldiğini izlemek icin 
+
+  // sayfanın belirli bir kısmına geldiğinde ve bir arama değeri girilmediğinde bir sonraki sayfa verilerini getirmek için kullanılır
+  useEffect(() => {
+    if (inView && !searchValue) fetchNextPage();
+  }, [inView, searchValue]);
 
   if (!posts)
     return (
