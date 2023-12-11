@@ -18,7 +18,9 @@ const Explore = () => {
 
   // sayfanın belirli bir kısmına geldiğinde ve bir arama değeri girilmediğinde bir sonraki sayfa verilerini getirmek için kullanılır
   useEffect(() => {
-    if (inView && !searchValue) fetchNextPage();
+    if (inView && !searchValue) {
+      fetchNextPage();
+    }
   }, [inView, searchValue]);
 
   if (!posts)
@@ -29,7 +31,8 @@ const Explore = () => {
     );
 
   const shouldShowSearchResults = searchValue !== "";
-  const shouldShowPosts = !shouldShowSearchResults && posts?.pages.every((item) => item.documents.length === 0);
+  const shouldShowPosts = !shouldShowSearchResults &&
+    posts?.pages.every((item) => item?.documents.length === 0);
 
   return (
     <div className="explore-container" >
@@ -79,11 +82,16 @@ const Explore = () => {
           <p className="text-light-4 mt-10 text-center w-full">Gönderinin son</p>
         ) :
           posts.pages.map((item, index) => (
-            <GridPostList key={`page-${index}`} posts={item.documents} />
+            <GridPostList key={`page-${index}`} posts={item?.documents || []} />
           ))
         }
       </div>
 
+      {hasNextPage && !searchValue && (
+        <div ref={ref} className="mt-10">
+          <Loader />
+        </div>
+      )}
 
     </div >
   )
