@@ -17,7 +17,7 @@ import Loader from "../shared/Loader"
 
 type PostFormProps = {
     post?: Models.Document;
-    action: "Create" | "Update";
+    action: "Oluştur" | "Güncelle";
 };
 
 const PostForm = ({ post, action }: PostFormProps) => {
@@ -39,7 +39,7 @@ const PostForm = ({ post, action }: PostFormProps) => {
     })
 
     async function onSubmit(values: z.infer<typeof PostValidation>) {
-        if (post && action === "Update") {
+        if (post && action === "Güncelle") {
             const updatedPost = await updatePost({
                 ...values,
                 postId: post.$id,
@@ -145,14 +145,14 @@ const PostForm = ({ post, action }: PostFormProps) => {
                         type="button"
                         className="shad-button_dark_4"
                     >
-                        Cancel
+                        İptal
                     </Button>
                     <Button
                         type="submit"
                         className="shad-button_primary whitespace-nowrap"
                         disabled={isLoadingCreate || isLoadingUpdate}>
                         {(isLoadingCreate || isLoadingUpdate) && <Loader />}
-                        {action} Post
+                        {action}
                     </Button>
                 </div>
 

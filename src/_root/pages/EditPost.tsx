@@ -27,7 +27,7 @@ const EditPost = () => {
           <h2 className="h3-bold md:h2-bold text-left w-full">Gönderi Düzenle</h2>
         </div>
 
-        <PostForm action="Update" post={post} />    {/* yeniden kullanılabilir alan */}
+        <PostForm action="Güncelle" post={post} />    {/* yeniden kullanılabilir alan */}
       </div>
     </div>
   )

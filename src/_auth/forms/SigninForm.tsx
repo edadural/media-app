@@ -65,7 +65,7 @@ const SigninForm = () => {
 
                 <img src="/assets/images/logo.svg" alt="logo" />
                 <h3 className="h4-bold md:h3-bold pt-3 sm:pt-5">
-                    Heabınıza giriş yapın
+                    Hesabınıza giriş yapın
                 </h3>
                 <p className="text-light-3 pt-1 small-medium md:base-regular">
                     Hoşgeldiniz. Bilgilerinizi giriniz.

@@ -14,7 +14,7 @@ const CreatePost = () => {
           <h2 className="h3-bold md:h2-bold text-left w-full">Gönderi Oluştur</h2>
         </div>
 
-        <PostForm action="Create" />    {/* yeniden kullanılabilir alan */}
+        <PostForm action="Oluştur" />    {/* yeniden kullanılabilir alan */}
       </div>
     </div>
   )
