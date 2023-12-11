@@ -15,6 +15,14 @@ export const SigninValidation = z.object({
   password: z.string().min(8, { message: "Parola en az 8 karakter olmalıdır." }),
 });
 
+export const ProfileValidation = z.object({
+  file: z.custom<File[]>(),
+  name: z.string().min(2, { message: "Ad en az 2 karakter olmalıdır." }),
+  username: z.string().min(2, { message: "Kullanıcı adı en az 2 karakter olmalıdır." }),
+  email: z.string().email(),
+  bio: z.string(),
+});
+
 
 // POST
 export const PostValidation = z.object({

@@ -1,7 +1,7 @@
 import { ID, Query } from "appwrite";
 
 import { account, appwriteConfig, avatars, databases, storage } from "./config";
-import { INewPost, INewUser, IUpdatePost } from "@/types";
+import { INewPost, INewUser, IUpdatePost, IUpdateUser } from "@/types";
 
 // ============================================================
 // AUTH
@@ -459,6 +459,64 @@ export async function getUserById(userId: string) {
         if (!user) throw Error;
 
         return user;
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+// UPDATE USER
+export async function updateUser(user: IUpdateUser) {
+    const hasFileToUpdate = user.file.length > 0;
+    try {
+        let image = {
+            imageUrl: user.imageUrl,
+            imageId: user.imageId,
+        };
+
+        if (hasFileToUpdate) {
+            // Appwrite deposuna yeni dosya yükle
+            const uploadedFile = await uploadFile(user.file[0]);
+            if (!uploadedFile) throw Error;
+
+            // Yeni dosya URL'sini al
+            const fileUrl = getFilePreview(uploadedFile.$id);
+            if (!fileUrl) {
+                await deleteFile(uploadedFile.$id);
+                throw Error;
+            }
+
+            image = { ...image, imageUrl: fileUrl, imageId: uploadedFile.$id };
+        }
+
+        //  Kullanıcıyı güncelle
+        const updatedUser = await databases.updateDocument(
+            appwriteConfig.databaseId,
+            appwriteConfig.userCollectionId,
+            user.userId,
+            {
+                name: user.name,
+                bio: user.bio,
+                imageUrl: image.imageUrl,
+                imageId: image.imageId,
+            }
+        );
+
+        // Güncelleme başarısız oldu
+        if (!updatedUser) {
+            // Yakın zamanda yüklenen yeni dosyayı silin
+            if (hasFileToUpdate) {
+                await deleteFile(image.imageId);
+            }
+            // Yeni dosya yüklenmediyse hata at
+            throw Error;
+        }
+
+        // Başarılı güncellemeden sonra eski dosyayı güvenle silin
+        if (user.imageId && hasFileToUpdate) {
+            await deleteFile(user.imageId);
+        }
+
+        return updatedUser;
     } catch (error) {
         console.log(error);
     }
