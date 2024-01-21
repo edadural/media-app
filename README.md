@@ -1,4 +1,5 @@
-# React + TypeScript + Appwrite + React Query
+# media-app
+React, Appwrite, React Query, TypeScript teknolojileri kullanılarak oluşturulmuş bir sosyal medya uygulamasıdır.
 
 ## Uygulama linki
 https://media-app-swart.vercel.app/
